@@ -14,3 +14,5 @@ docker-compose up -d db
 npm install
 
 npm start
+
+Адрес: http://localhost:3000/
