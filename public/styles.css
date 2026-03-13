@@ -11,7 +11,6 @@ th,
 td {
     text-align: center;
     border: 1px solid #000000;
-    white-space: wrap;
 }
 
 th {
@@ -96,6 +95,22 @@ td:nth-child(12), th:nth-child(12) { width: 8%; }
     font-size: 16px;
     margin: 2px 4px;
     border-radius: 4px;
+}
+
+.search {
+    width: 300px;
+    display: inline-block;
+    margin-left: 15px;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.search:focus {
+    outline: none;
+    border-color: #007bff;
 }
 
 .add-button {

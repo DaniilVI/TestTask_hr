@@ -39,6 +39,9 @@ async function loadEmployees() {
             </tr>
         `).join('');
 
+        document.getElementById('searchInput').value = '';
+        searchEmployees();
+
     } catch (error) {
         console.error('Ошибка:', error);
         document.getElementById('employeesTableBody').innerHTML =
@@ -82,6 +85,10 @@ document.addEventListener('click', async (e) => {
         const button = e.target.closest('.button-edit');
         const row = button.closest('tr');
         const employeeId = button.dataset.employeeId;
+
+        if (row.cells[9].textContent.includes('Уволен')) {
+            return;
+        }
 
         if (row.classList.contains('editing')) {
             const success = await saveRow(row, employeeId);
@@ -275,3 +282,19 @@ form.addEventListener('submit', async (e) => {
         console.error('Ошибка сети:', error);
     }
 });
+
+function searchEmployees() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#employeesTableBody tr');
+    
+    rows.forEach(row => {
+        const nameCell = row.cells[0].textContent.toLowerCase();
+        if (nameCell.includes(searchTerm) || searchTerm === '') {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+document.getElementById('searchInput').addEventListener('input', searchEmployees);
