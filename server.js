@@ -30,6 +30,19 @@ app.get('/api/employees', async (req, res) => {
     }
 });
 
+app.patch('/api/employees/:id/toggle-status', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(
+            'UPDATE employee SET is_active = NOT is_active WHERE id = $1', 
+            [id]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Ошибка с БД' });
+    }
+});
 
 
 app.listen(PORT, () => {

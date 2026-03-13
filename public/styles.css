@@ -35,3 +35,27 @@ th {
     text-align: center;
 }
 
+.button-toggle-status, .button-edit {
+    display: inline-block;
+    width: 40px;
+    height: 32px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.button-fire{
+    background-image: url('icons/bootkick-icon.png');
+}
+
+.button-return-to-work{
+    background-image: url('icons/open-door-icon.png');
+}
+
+.button-start-edit{
+    background-image: url('icons/edit-icon.png');
+}
+
+.button-confirm-edit{
+    background-image: url('icons/confirm-icon.png');
+}
