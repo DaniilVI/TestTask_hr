@@ -11,4 +11,6 @@
 
 docker-compose up -d db 
 
+npm install
+
 npm start
