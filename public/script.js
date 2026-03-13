@@ -39,8 +39,13 @@ async function loadEmployees() {
             </tr>
         `).join('');
 
+        loadPositions();
+        loadDepartments();
+
         document.getElementById('searchInput').value = '';
-        searchEmployees();
+        document.getElementById('departmentFilter').value = '';
+        document.getElementById('positionFilter').value = '';
+        filterEmployees();
 
     } catch (error) {
         console.error('Ошибка:', error);
@@ -96,6 +101,9 @@ document.addEventListener('click', async (e) => {
                 return;
             }
             isEditing = false;
+            document.getElementById('positionFilter').disabled = false;
+            document.getElementById('departmentFilter').disabled = false;
+            document.getElementById('searchInput').disabled = false;
             row.classList.remove('editing');
             button.classList.remove('button-confirm-edit');
             button.classList.add('button-start-edit');
@@ -104,6 +112,9 @@ document.addEventListener('click', async (e) => {
         } else {
             if (isEditing) return;
             isEditing = true;
+            document.getElementById('positionFilter').disabled = true;
+            document.getElementById('departmentFilter').disabled = true;
+            document.getElementById('searchInput').disabled = true;
             row.classList.add('editing');
             button.classList.add('button-confirm-edit');
             button.classList.remove('button-start-edit');
@@ -283,13 +294,66 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-function searchEmployees() {
+function loadDepartments() {
+    const departmentSet = new Set();
+    
+    document.querySelectorAll('#employeesTableBody tr').forEach(row => {
+        const deptCell = row.cells[5];
+        if (deptCell.textContent.trim()) {
+            departmentSet.add(deptCell.textContent.trim());
+        }
+    });
+    
+    const select = document.getElementById('departmentFilter');
+    select.innerHTML = '<option value="">Все отделы</option>';
+
+    Array.from(departmentSet).sort().forEach(dept => {
+        const option = document.createElement('option');
+        option.value = dept;
+        option.textContent = dept;
+        select.appendChild(option);
+    });
+}
+
+function loadPositions() {
+    const positionSet = new Set();
+    
+    document.querySelectorAll('#employeesTableBody tr').forEach(row => {
+        const positionCell = row.cells[6];
+        if (positionCell.textContent.trim()) {
+            positionSet.add(positionCell.textContent.trim());
+        }
+    });
+    
+    const select = document.getElementById('positionFilter');
+    select.innerHTML = '<option value="">Все должности</option>';
+    
+    Array.from(positionSet).sort().forEach(position => {
+        const option = document.createElement('option');
+        option.value = position;
+        option.textContent = position;
+        select.appendChild(option);
+    });
+}
+
+function filterEmployees() {
+    if (isEditing) return;
+    
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const selectedDept = document.getElementById('departmentFilter').value;
+    const selectedPosition = document.getElementById('positionFilter').value;
     const rows = document.querySelectorAll('#employeesTableBody tr');
     
     rows.forEach(row => {
         const nameCell = row.cells[0].textContent.toLowerCase();
-        if (nameCell.includes(searchTerm) || searchTerm === '') {
+        const deptCell = row.cells[5].textContent.toLowerCase();
+        const positionCell = row.cells[6].textContent.toLowerCase();
+        
+        const matchesName = nameCell.includes(searchTerm);
+        const matchesDept = !selectedDept || deptCell === selectedDept.toLowerCase();
+        const matchesPosition = !selectedPosition || positionCell === selectedPosition.toLowerCase();
+        
+        if ((matchesName || searchTerm === '') && matchesDept && matchesPosition) {
             row.style.display = '';
         } else {
             row.style.display = 'none';
@@ -297,4 +361,6 @@ function searchEmployees() {
     });
 }
 
-document.getElementById('searchInput').addEventListener('input', searchEmployees);
+document.getElementById('searchInput').addEventListener('input', filterEmployees);
+document.getElementById('departmentFilter').addEventListener('change', filterEmployees);
+document.getElementById('positionFilter').addEventListener('change', filterEmployees);
