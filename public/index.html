@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles.css">
     <title>Сотрудники</title>
     <script defer src="script.js"></script>
 </head>
+
 <body>
+    <button id="addEmployeeButton" class="add-button">
+        Добавить сотрудника
+    </button>
+
     <h1>Сотрудники</h1>
-    
+
     <table id="employeesTable">
         <thead>
             <tr>
-                <th>№</th>
                 <th>ФИО</th>
                 <th>Дата рождения</th>
                 <th>Паспорт</th>
@@ -28,9 +33,43 @@
         </thead>
         <tbody id="employeesTableBody">
             <tr>
-                
+
             </tr>
         </tbody>
     </table>
+
+    <div id="addEmployeeModal" class="modal">
+        <div class="modal-content">
+            <div class="head-modal">
+                <h2>Добавить сотрудника</h2>
+                <button id="closeModal" class="close-modal">×</button>
+            </div>
+
+            <form id="employeeForm">
+                <div class="add-form">
+                    <input name="name" placeholder="ФИО" required class="add-person-input">
+                    <label>Дата рождения:
+                        <input name="birth_date" type="date" required class="add-person-input">
+                    </label>
+                    <input name="passport" placeholder="Паспорт (NNNN NNNNNN)" pattern="\d{4}\s\d{6}" maxlength="11"
+                        required class="add-person-input">
+                    <input name="phone" placeholder="Телефон (+7 или 8)" pattern="(\+7|8)?[0-9]{10}" maxlength="12"
+                        required class="add-person-input">
+                    <input name="address" placeholder="Адрес" class="add-person-input" style="grid-column: span 2;">
+                    <input name="department" placeholder="Отдел" class="add-person-input">
+                    <input name="position" placeholder="Должность" class="add-person-input">
+                    <input name="salary" type="text" placeholder="Зарплата" required class="add-person-input">
+                    <label>Принят на работу:
+                        <input name="hire_date" type="date" required class="add-person-input">
+                    </label>
+                </div>
+                <div class="text-right">
+                    <button type="button" id="cancelButton" class="cancel-button">Отмена</button>
+                    <button type="submit" class="create-button">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

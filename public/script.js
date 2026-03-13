@@ -1,3 +1,5 @@
+let isEditing = false;
+
 async function loadEmployees() {
     try {
         const response = await fetch('/api/employees');
@@ -12,7 +14,6 @@ async function loadEmployees() {
 
         tbody.innerHTML = employees.map(emp => `
             <tr class="text-center ${!emp.is_active ? 'row-danger' : ''}">
-                <td>${emp.id}</td>
                 <td>${emp.name}</td>
                 <td>${formatDate(emp.birth_date)}</td>
                 <td>${emp.passport}</td>
@@ -55,6 +56,8 @@ function formatSalary(salary) {
 
 document.addEventListener('click', async (e) => {
     if (e.target.closest('.button-toggle-status')) {
+        if (isEditing) return;
+
         const button = e.target.closest('.button-toggle-status');
         const employeeId = button.dataset.employeeId;
 
@@ -85,12 +88,15 @@ document.addEventListener('click', async (e) => {
             if (!success) {
                 return;
             }
+            isEditing = false;
             row.classList.remove('editing');
             button.classList.remove('button-confirm-edit');
             button.classList.add('button-start-edit');
             button.title = 'Редактировать';
             loadEmployees();
         } else {
+            if (isEditing) return;
+            isEditing = true;
             row.classList.add('editing');
             button.classList.add('button-confirm-edit');
             button.classList.remove('button-start-edit');
@@ -101,7 +107,7 @@ document.addEventListener('click', async (e) => {
 });
 
 function makeRowEditable(row) {
-    const cells = row.querySelectorAll('td:nth-child(n+2):nth-child(-n+10)');
+    const cells = row.querySelectorAll('td:nth-child(n+1):nth-child(-n+9)');
     cells.forEach((cell, ind) => {
         const text = cell.textContent.trim();
         switch (ind) {
@@ -187,7 +193,8 @@ async function saveRow(row, employeeId) {
         address: inputs[4].value,
         department: inputs[5].value,
         position: inputs[6].value,
-        salary: inputs[7].value
+        salary: inputs[7].value,
+        hire_date: inputs[8].value
     };
 
     if (!validateData(data)) return false;
@@ -214,3 +221,57 @@ async function saveRow(row, employeeId) {
 }
 
 document.addEventListener('DOMContentLoaded', loadEmployees);
+
+const modal = document.getElementById('addEmployeeModal');
+const addButton = document.getElementById('addEmployeeButton');
+const closeButton = document.getElementById('closeModal');
+const cancelButton = document.getElementById('cancelButton');
+const form = document.getElementById('employeeForm');
+
+addButton.addEventListener('click', () => {
+    if (isEditing) return;
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+});
+
+closeButton.addEventListener('click', closeModal);
+cancelButton.addEventListener('click', closeModal);
+window.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.style.display === 'block') closeModal();
+});
+
+function closeModal() {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+    form.reset();
+}
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    if (!validateData(data)) return;
+    
+    try {
+        const response = await fetch('/api/new-employee', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            closeModal();
+            loadEmployees();
+        } else {
+            alert('Ошибка сервера');
+        }
+    } catch (error) {
+        console.error('Ошибка сети:', error);
+    }
+});
