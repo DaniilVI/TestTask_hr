@@ -14,8 +14,16 @@ th, td {
 th {
     padding: 12px 8px;
     background: #c2c8ce;
-    font-weight: 600;
     border-bottom: 3px solid #435466;
+}
+
+tr.editing {
+    background-color: #c1b5f4;
+}
+
+tr.editing input {
+    border: 1px solid #2a0ff8;
+    background: white;
 }
 
 .text-danger {
@@ -42,6 +50,7 @@ th {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    background-color: white;
 }
 
 .button-fire{
@@ -58,4 +67,9 @@ th {
 
 .button-confirm-edit{
     background-image: url('icons/confirm-icon.png');
+}
+
+.form-control {
+    font-size: 16px;
+    margin: 2px 4px;
 }

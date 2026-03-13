@@ -15,10 +15,8 @@ const pool = new Pool({
     port: 5432
 });
 
-app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
-
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/employees', async (req, res) => {
     try {
@@ -44,6 +42,25 @@ app.patch('/api/employees/:id/toggle-status', async (req, res) => {
     }
 });
 
+app.put('/api/employees/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name, birth_date, passport, phone, address, department, position, salary } = req.body;
+    try {
+        await pool.query(`
+            UPDATE employee 
+            SET name = $1, birth_date = $2, passport = $3, phone = $4, 
+                address = $5, department = $6, position = $7, salary = $8 
+            WHERE id = $9
+        `, [name, birth_date, passport, phone, address, department, position, salary, id]);
+        
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Ошибка с БД' });
+    }
+});
+
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
     console.log(`Сервер: http://localhost:${PORT}`);
