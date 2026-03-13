@@ -1,0 +1,37 @@
+table {
+    border-collapse: collapse;
+    font-size: 18px;
+    width: 100%;
+    margin-top: 20px;
+    border: 1px solid #000000;
+}
+
+th, td {
+    text-align: center;
+    border: 1px solid #000000;
+}
+
+th {
+    padding: 12px 8px;
+    background: #c2c8ce;
+    font-weight: 600;
+    border-bottom: 3px solid #435466;
+}
+
+.text-danger {
+    color: #d92e3f;
+}
+
+.text-success {
+    color: #2ed970;
+}
+
+.row-danger {
+    background-color: #f9d3d6;
+    color: #000000;
+}
+
+.text-center {
+    text-align: center;
+}
+
